@@ -16,8 +16,8 @@ from .generator import WorkflowGenerator
 from .utils import (
     check_github_folder,
     create_directory_safe,
-    validate_yaml,
     get_template_path,
+    validate_yaml,
 )
 
 __all__ = [
