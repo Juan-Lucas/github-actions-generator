@@ -1,5 +1,10 @@
 # GitHub Actions Generator
 
+[![PyPI version](https://badge.fury.io/py/gha-generator.svg)](https://badge.fury.io/py/gha-generator)
+[![Python](https://img.shields.io/pypi/pyversions/gha-generator.svg)](https://pypi.org/project/gha-generator/)
+[![License](https://img.shields.io/pypi/l/gha-generator.svg)](https://github.com/Juan-Lucas/github-actions-generator/blob/main/LICENSE)
+[![Downloads](https://pepy.tech/badge/gha-generator)](https://pepy.tech/project/gha-generator)
+
 Un outil CLI pour générer des workflows GitHub Actions personnalisés et standardisés.
 
 ## Description
