@@ -120,5 +120,3 @@ Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de 
     </td>
   </tr>
 </table>
-
-Repository : [https://github.com/Juan-Lucas/github-actions-generator](https://github.com/Juan-Lucas/github-actions-generator)
