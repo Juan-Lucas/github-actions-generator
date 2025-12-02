@@ -6,13 +6,13 @@ GitHub Actions workflow files.
 """
 
 import sys
-import click
 from pathlib import Path
-from typing import Optional
+
+import click
 
 from . import __version__
 from .generator import WorkflowGenerator
-from .utils import check_github_folder, create_directory_safe
+from .utils import create_directory_safe
 
 
 @click.group()
@@ -72,11 +72,11 @@ def create(
     """Create a new GitHub Actions workflow file."""
     try:
         click.echo(f"🚀 Generating {project_type} workflow for '{project_name}'...")
-        
+
         # Create output directory if it doesn't exist
         output_path = Path(output)
         create_directory_safe(output_path)
-        
+
         # Prepare variables for template
         variables = {
             "project_name": project_name,
@@ -84,14 +84,14 @@ def create(
             "php_version": php_version,
             "node_version": node_version,
         }
-        
+
         # Generate workflow
         generator = WorkflowGenerator()
         workflow_file = generator.generate(project_type, variables, output_path)
-        
+
         click.echo(f"✅ Workflow created successfully: {workflow_file}")
         click.echo(f"📝 File location: {workflow_file.absolute()}")
-        
+
     except Exception as e:
         click.echo(f"❌ Error: {str(e)}", err=True)
         sys.exit(1)
@@ -103,12 +103,12 @@ def list_templates():
     try:
         generator = WorkflowGenerator()
         templates = generator.list_templates()
-        
+
         click.echo("📋 Available templates:")
         click.echo()
         for template in templates:
             click.echo(f"  • {template}")
-        
+
     except Exception as e:
         click.echo(f"❌ Error: {str(e)}", err=True)
         sys.exit(1)
@@ -127,18 +127,18 @@ def validate(workflow_file: str):
     """Validate a GitHub Actions workflow file."""
     try:
         from .utils import validate_yaml
-        
+
         click.echo(f"🔍 Validating {workflow_file}...")
-        
+
         file_path = Path(workflow_file)
         is_valid, message = validate_yaml(file_path)
-        
+
         if is_valid:
             click.echo(f"✅ {message}")
         else:
             click.echo(f"❌ {message}", err=True)
             sys.exit(1)
-            
+
     except Exception as e:
         click.echo(f"❌ Error: {str(e)}", err=True)
         sys.exit(1)
