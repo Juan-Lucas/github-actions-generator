@@ -1,0 +1,37 @@
+# Base GitHub Actions Workflow Template
+# This file contains common elements that can be reused across templates
+
+name: {{ project_name }} CI/CD
+
+on:
+  push:
+    branches: [ main, dev ]
+  pull_request:
+    branches: [ main, dev ]
+
+env:
+  # Common environment variables
+  PROJECT_NAME: {{ project_name }}
+
+jobs:
+  # Common job configuration
+  build:
+    runs-on: ubuntu-latest
+    
+    # Timeout configuration
+    timeout-minutes: 30
+    
+    # Permissions
+    permissions:
+      contents: read
+      pull-requests: write
+    
+    steps:
+      # Checkout repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      # Cache dependencies (to be customized per template)
+      # This is a placeholder for language-specific caching

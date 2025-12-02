@@ -1,0 +1,115 @@
+name: {{ project_name }} - React App CI/CD
+
+on:
+  push:
+    branches: [ main, dev ]
+  pull_request:
+    branches: [ main, dev ]
+
+env:
+  NODE_VERSION: "{{ node_version }}"
+  PROJECT_NAME: {{ project_name }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    
+    permissions:
+      contents: read
+      pull-requests: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Set up Node.js {{ node_version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: "{{ node_version }}"
+      
+      - name: Cache node modules
+        uses: actions/cache@v3
+        with:
+          path: |
+            node_modules
+            ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      
+      - name: Install dependencies
+        run: |
+          npm ci
+      
+      - name: Lint with ESLint
+        run: |
+          npm run lint
+        continue-on-error: true
+      
+      - name: Format check with Prettier
+        run: |
+          npm run format:check
+        continue-on-error: true
+      
+      - name: Type check with TypeScript
+        if: hashFiles('tsconfig.json') != ''
+        run: |
+          npm run type-check
+        continue-on-error: true
+      
+      - name: Run tests with Jest
+        run: |
+          npm run test -- --coverage --watchAll=false
+      
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@v3
+        if: always()
+        with:
+          file: ./coverage/coverage-final.json
+          flags: unittests
+          name: codecov-umbrella
+        continue-on-error: true
+      
+      - name: Build production bundle
+        run: |
+          npm run build
+        env:
+          CI: true
+      
+      - name: Analyze bundle size
+        run: |
+          npx webpack-bundle-analyzer build/bundle-stats.json --mode static --report build/bundle-report.html --no-open
+        continue-on-error: true
+      
+      - name: Check for security vulnerabilities
+        run: |
+          npm audit --audit-level=moderate
+        continue-on-error: true
+      
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-artifacts
+          path: build/
+          retention-days: 7
+
+  # Optional: Deploy job (uncomment and configure as needed)
+  # deploy:
+  #   needs: test
+  #   runs-on: ubuntu-latest
+  #   if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+  #   
+  #   steps:
+  #     - name: Download build artifacts
+  #       uses: actions/download-artifact@v3
+  #       with:
+  #         name: build-artifacts
+  #         path: build/
+  #     
+  #     - name: Deploy to production
+  #       run: |
+  #         echo "🚀 Deploying to production..."
+  #         # Add your deployment commands here (e.g., Netlify, Vercel, AWS S3)

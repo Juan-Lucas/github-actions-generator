@@ -1,0 +1,137 @@
+name: {{ project_name }} - Laravel API CI/CD
+
+on:
+  push:
+    branches: [ main, dev ]
+  pull_request:
+    branches: [ main, dev ]
+
+env:
+  PHP_VERSION: "{{ php_version }}"
+  PROJECT_NAME: {{ project_name }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    
+    permissions:
+      contents: read
+      pull-requests: write
+    
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: test_db
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Set up PHP {{ php_version }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "{{ php_version }}"
+          extensions: mbstring, xml, ctype, iconv, intl, pdo_mysql, dom, filter, gd, json, opcache
+          coverage: xdebug
+      
+      - name: Cache Composer dependencies
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+      
+      - name: Install Composer dependencies
+        run: |
+          composer install --prefer-dist --no-progress --no-interaction
+      
+      - name: Copy .env file
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+      
+      - name: Configure database
+        run: |
+          echo "DB_CONNECTION=mysql" >> .env
+          echo "DB_HOST=127.0.0.1" >> .env
+          echo "DB_PORT=3306" >> .env
+          echo "DB_DATABASE=test_db" >> .env
+          echo "DB_USERNAME=root" >> .env
+          echo "DB_PASSWORD=root" >> .env
+      
+      - name: Run migrations
+        run: |
+          php artisan migrate --force
+      
+      - name: Lint with PHP_CodeSniffer
+        run: |
+          composer require --dev squizlabs/php_codesniffer
+          ./vendor/bin/phpcs --standard=PSR12 app
+        continue-on-error: true
+      
+      - name: Run PHP Static Analysis (PHPStan)
+        run: |
+          composer require --dev phpstan/phpstan
+          ./vendor/bin/phpstan analyse app --level=5
+        continue-on-error: true
+      
+      - name: Run tests with PHPUnit
+        env:
+          DB_CONNECTION: mysql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_DATABASE: test_db
+          DB_USERNAME: root
+          DB_PASSWORD: root
+        run: |
+          php artisan test --coverage --min=80
+      
+      - name: Generate coverage report
+        run: |
+          ./vendor/bin/phpunit --coverage-html coverage --coverage-clover coverage.xml
+        continue-on-error: true
+      
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@v3
+        if: always()
+        with:
+          file: ./coverage.xml
+          flags: unittests
+          name: codecov-umbrella
+        continue-on-error: true
+      
+      - name: Check Laravel configuration
+        run: |
+          php artisan config:cache
+          php artisan route:cache
+          php artisan view:cache
+      
+      - name: Run security audit
+        run: |
+          composer audit
+        continue-on-error: true
+
+  # Optional: Deploy job (uncomment and configure as needed)
+  # deploy:
+  #   needs: test
+  #   runs-on: ubuntu-latest
+  #   if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+  #   
+  #   steps:
+  #     - name: Deploy to production
+  #       run: |
+  #         echo "🚀 Deploying to production..."
+  #         # Add your deployment commands here

@@ -1,0 +1,134 @@
+name: {{ project_name }} - Django API CI/CD
+
+on:
+  push:
+    branches: [ main, dev ]
+  pull_request:
+    branches: [ main, dev ]
+
+env:
+  PYTHON_VERSION: "{{ python_version }}"
+  PROJECT_NAME: {{ project_name }}
+  DJANGO_SETTINGS_MODULE: config.settings
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    
+    permissions:
+      contents: read
+      pull-requests: write
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: test_db
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Set up Python {{ python_version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: "{{ python_version }}"
+      
+      - name: Cache pip dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      
+      - name: Install development dependencies
+        run: |
+          pip install pytest pytest-cov pytest-django flake8 black ruff coverage
+      
+      - name: Lint with Ruff
+        run: |
+          ruff check . --output-format=github
+        continue-on-error: true
+      
+      - name: Format check with Black
+        run: |
+          black --check --diff .
+        continue-on-error: true
+      
+      - name: Lint with Flake8
+        run: |
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+        continue-on-error: true
+      
+      - name: Check for pending migrations
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
+        run: |
+          python manage.py makemigrations --check --dry-run --no-input
+      
+      - name: Run migrations
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
+        run: |
+          python manage.py migrate --no-input
+      
+      - name: Run tests with coverage
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
+        run: |
+          coverage run --source='.' manage.py test
+          coverage report
+          coverage xml
+          coverage html
+      
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@v3
+        if: always()
+        with:
+          file: ./coverage.xml
+          flags: unittests
+          name: codecov-umbrella
+        continue-on-error: true
+      
+      - name: Check Django security
+        run: |
+          python manage.py check --deploy
+        continue-on-error: true
+      
+      - name: Collect static files
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
+        run: |
+          python manage.py collectstatic --no-input
+        continue-on-error: true
+
+  # Optional: Deploy job (uncomment and configure as needed)
+  # deploy:
+  #   needs: test
+  #   runs-on: ubuntu-latest
+  #   if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+  #   
+  #   steps:
+  #     - name: Deploy to production
+  #       run: |
+  #         echo "🚀 Deploying to production..."
+  #         # Add your deployment commands here
