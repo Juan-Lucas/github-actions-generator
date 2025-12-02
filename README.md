@@ -2,11 +2,11 @@
 
 > Un outil CLI puissant pour générer des workflows GitHub Actions personnalisés et standardisés
 
-## 🎯 Description
+## Description
 
 GitHub Actions Generator est un outil en ligne de commande qui automatise la création de fichiers de configuration YAML pour GitHub Actions. Il permet de standardiser et d'accélérer la mise en place des pipelines CI/CD pour différents environnements techniques (Data Science, Django, Laravel, React, etc.).
 
-## ✨ Fonctionnalités
+## Fonctionnalités
 
 - **Génération automatique** de workflows GitHub Actions
 - **Templates pré-configurés** pour différentes stacks technologiques
@@ -15,7 +15,7 @@ GitHub Actions Generator est un outil en ligne de commande qui automatise la cr�
 - **Interface CLI intuitive** avec Click
 - **Validation YAML** automatique
 
-## 📦 Installation
+## Installation
 
 ### Prérequis
 
@@ -54,7 +54,7 @@ gha-gen --version
 gha-gen --help
 ```
 
-## 🚀 Utilisation
+## Utilisation
 
 ### Commandes principales
 
@@ -109,9 +109,9 @@ gha-gen validate --file .github/workflows/ci.yml
 
 Vérifie la syntaxe YAML et la validité du fichier de workflow.
 
-## 📋 Templates disponibles
+## Templates disponibles
 
-### 🐍 data-science
+### data-science
 **Pour:** Projets Data Science, Machine Learning, Notebooks Jupyter
 
 **Inclut:**
@@ -128,7 +128,7 @@ Vérifie la syntaxe YAML et la validité du fichier de workflow.
 
 ---
 
-### 🌐 django-api
+### django-api
 **Pour:** Applications Django, API Django REST Framework
 
 **Inclut:**
@@ -145,7 +145,7 @@ Vérifie la syntaxe YAML et la validité du fichier de workflow.
 
 ---
 
-### ⚡ laravel-api
+### laravel-api
 **Pour:** Applications Laravel, API PHP
 
 **Inclut:**
@@ -163,7 +163,7 @@ Vérifie la syntaxe YAML et la validité du fichier de workflow.
 
 ---
 
-### ⚛️ react-app
+### react-app
 **Pour:** Applications React, Next.js, applications Node.js frontend
 
 **Inclut:**
@@ -179,7 +179,7 @@ Vérifie la syntaxe YAML et la validité du fichier de workflow.
 - `project_name` : Nom du projet
 - `node_version` : Version Node.js (défaut: 18)
 
-## 🛠️ Structure du projet
+## Structure du projet
 
 ```
 github-actions-generator/
@@ -200,7 +200,7 @@ github-actions-generator/
 └── README.md             # Documentation
 ```
 
-## 🧪 Tests
+## Tests
 
 Le projet inclut une suite complète de tests (69 tests, 84% de couverture).
 
@@ -235,7 +235,7 @@ flake8 gha_generator/
 - **test_utils.py** : Tests des fonctions utilitaires (20 tests)
 - **test_integration.py** : Tests end-to-end complets (12 tests)
 
-## 🤝 Contribution
+## Contribution
 
 Les contributions sont les bienvenues ! Voici comment contribuer :
 
@@ -281,7 +281,7 @@ Les contributions sont les bienvenues ! Voici comment contribuer :
 - **Commits** : Utiliser des messages clairs (Conventional Commits recommandé)
 - **Coverage** : Maintenir le taux de couverture au-dessus de 80%
 
-## 📝 Variables et personnalisation
+## Variables et personnalisation
 
 ### Variables de template
 
@@ -325,7 +325,7 @@ jobs:
         # Exécution des tests
 ```
 
-## � Dépendances
+## Dépendances
 
 ### Dépendances de production
 
@@ -341,7 +341,7 @@ jobs:
 - **black** ≥ 23.0.0 : Formateur de code Python
 - **flake8** ≥ 6.1.0 : Linter PEP 8
 
-## ❓ FAQ
+## FAQ
 
 ### Comment ajouter un nouveau template ?
 
@@ -363,9 +363,9 @@ Les templates sont pré-configurés pour fonctionner avec des structures de proj
 
 ### Comment contribuer un nouveau template ?
 
-Consultez la section [Contribution](#-contribution) et ouvrez une Pull Request avec votre template et les tests associés.
+Consultez la section [Contribution](#contribution) et ouvrez une Pull Request avec votre template et les tests associés.
 
-## 🗺️ Roadmap
+## Roadmap
 
 - [x] Templates de base (Python, PHP, Node.js)
 - [x] CLI complète avec Click
@@ -378,17 +378,17 @@ Consultez la section [Contribution](#-contribution) et ouvrez une Pull Request a
 - [ ] Interface graphique (GUI)
 - [ ] Publication sur PyPI
 
-## 📄 Licence
+## Licence
 
 Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de détails.
 
-## 👤 Auteur
+## Auteur
 
-**GitHub Actions Generator** - Créé avec ❤️ pour automatiser et standardiser les workflows CI/CD
+**GitHub Actions Generator** - Créé pour automatiser et standardiser les workflows CI/CD
 
 Repository : [https://github.com/Juan-Lucas/github-actions-generator](https://github.com/Juan-Lucas/github-actions-generator)
 
-## 🙏 Remerciements
+## Remerciements
 
 - **GitHub Actions** pour leur plateforme d'automatisation puissante
 - **Click**, **Jinja2** et **PyYAML** pour les excellentes bibliothèques Python
