@@ -111,6 +111,14 @@ Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de 
 
 ## Auteur
 
-**Jean-Luc Mupasa**
+<table>
+  <tr>
+    <td><img src="https://github.com/Juan-Lucas.png" width="80" style="border-radius: 50%;"></td>
+    <td>
+      <strong>Jean-Luc Mupasa</strong><br>
+      <a href="https://github.com/Juan-Lucas">@Juan-Lucas</a>
+    </td>
+  </tr>
+</table>
 
 Repository : [https://github.com/Juan-Lucas/github-actions-generator](https://github.com/Juan-Lucas/github-actions-generator)
