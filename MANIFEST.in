@@ -1,0 +1,23 @@
+# Include README and LICENSE
+include README.md
+include LICENSE
+
+# Include requirements
+include requirements.txt
+
+# Include all YAML templates
+recursive-include gha_generator/templates *.yml
+
+# Exclude unnecessary files
+global-exclude __pycache__
+global-exclude *.py[cod]
+global-exclude .DS_Store
+global-exclude *.swp
+global-exclude *.swo
+
+# Exclude tests and development files
+exclude .gitignore
+exclude .github/*
+prune tests
+prune .vscode
+prune .idea
