@@ -111,12 +111,6 @@ Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de 
 
 ## Auteur
 
-**GitHub Actions Generator** - Créé pour automatiser et standardiser les workflows CI/CD
+**Jean-Luc Mupasa**
 
 Repository : [https://github.com/Juan-Lucas/github-actions-generator](https://github.com/Juan-Lucas/github-actions-generator)
-
-## Remerciements
-
-- **GitHub Actions** pour leur plateforme d'automatisation puissante
-- **Click**, **Jinja2** et **PyYAML** pour les excellentes bibliothèques Python
-- La **communauté Python** pour les outils de qualité de code (Ruff, Black, pytest)
