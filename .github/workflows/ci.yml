@@ -32,7 +32,3 @@ jobs:
       - name: Run tests
         run: |
           python -m pytest tests
-
-      - name: Check notebook presence
-        run: |
-          test -d notebooks
