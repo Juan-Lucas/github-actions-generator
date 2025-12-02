@@ -144,7 +144,8 @@ class TestIntegration:
         
         # Check required top-level keys
         assert "name" in workflow_data
-        assert "on" in workflow_data
+        # Note: YAML parses "on:" as boolean True, not string "on"
+        assert (True in workflow_data or "on" in workflow_data)
         assert "jobs" in workflow_data
         
         # Check jobs structure
