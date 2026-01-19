@@ -109,18 +109,10 @@ pytest --cov=gha_generator
 5. Commit (`git commit -m 'feat: nouvelle fonctionnalité'`)
 6. Push et ouvrir une Pull Request
 
-## Licence
-
-Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de détails.
-
 ## Auteur
 
-<table>
-  <tr>
-    <td><img src="https://github.com/Juan-Lucas.png" width="80" style="border-radius: 50%;"></td>
-    <td>
-      <strong>Jean-Luc Mupasa</strong><br>
-      <a href="https://github.com/Juan-Lucas">@Juan-Lucas</a>
-    </td>
-  </tr>
-</table>
+Jean-Luc MUPASA KALUNGA
+
+## Licence
+
+Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
