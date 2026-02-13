@@ -172,8 +172,6 @@ def cli():
     """GitHub Actions Generator - Generate customized CI/CD workflows."""
     pass
 
-
-
 @cli.command()
 @click.option(
     "--type",
@@ -428,6 +426,7 @@ def template_create(name, from_file):
     else:
         dest.write_text("""# Nouveau template personnalisé\nname: {{ project_name }} - Custom Workflow\n# Ajoutez votre contenu ici\n""")
         click.echo(f"Template vierge '{name}' créé dans {dest}")
+
 
 @template.command()
 @click.argument("name")
