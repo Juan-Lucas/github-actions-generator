@@ -53,9 +53,7 @@ class WorkflowGenerator:
             return template
         except TemplateNotFound:
             available = self.list_templates()
-            suggestion = ''
-            if available:
-                suggestion = f"\nSuggestions : {', '.join(available)}"
+            # suggestion variable removed (was unused)
             raise ValueError(
                 f"Template '{template_type}' not found."
             ) from None
