@@ -57,8 +57,7 @@ class WorkflowGenerator:
             if available:
                 suggestion = f"\nSuggestions : {', '.join(available)}"
             raise ValueError(
-                f"Le template '{template_type}' est introuvable dans les templates disponibles.{suggestion}\n"
-                f"Vérifiez l'orthographe ou utilisez 'gha-gen list-templates' pour la liste complète."
+                f"Template '{template_type}' not found."
             ) from None
 
     def render_template(self, template: Template, variables: dict[str, Any]) -> str:
