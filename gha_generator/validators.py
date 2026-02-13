@@ -12,13 +12,13 @@ def validate_strict(workflow_path: Path) -> tuple[bool, list[str]]:
 
     jobs = workflow.get("jobs", {})
     for job_name, job in jobs.items():
-        # Permissions explicites
+        # Vérifie la présence de permissions explicites
         if "permissions" not in job:
             issues.append(f"[{job_name}] Permissions non définies (ajoutez 'permissions: read-all' ou plus restrictif)")
-        # Timeout
+        # Vérifie la présence d'un timeout
         if "timeout-minutes" not in job:
             issues.append(f"[{job_name}] timeout-minutes manquant (ex: 30)")
-        # Steps: actions versionnées
+        # Vérifie que chaque action utilisée est versionnée
         for step in job.get("steps", []):
             if "uses" in step:
                 action = step["uses"]

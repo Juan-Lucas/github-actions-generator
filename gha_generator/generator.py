@@ -56,8 +56,8 @@ class WorkflowGenerator:
             if available:
                 suggestion = f"\nSuggestions : {', '.join(available)}"
             raise ValueError(
-                f"❌ Le template '{template_type}' est introuvable dans les templates disponibles.{suggestion}\n"
-                f"➡️ Vérifiez l'orthographe ou utilisez 'gha-gen list-templates' pour la liste complète."
+                f"Le template '{template_type}' est introuvable dans les templates disponibles.{suggestion}\n"
+                f"Vérifiez l'orthographe ou utilisez 'gha-gen list-templates' pour la liste complète."
             ) from None
 
     def render_template(self, template: Template, variables: dict[str, Any]) -> str:
@@ -74,7 +74,7 @@ class WorkflowGenerator:
         try:
             return template.render(**variables)
         except Exception as e:
-            raise ValueError(f"Erreur lors du rendu du template : {str(e)}\n➡️ Vérifiez que toutes les variables nécessaires sont fournies.") from e
+            raise ValueError(f"Erreur lors du rendu du template : {str(e)}\nVérifiez que toutes les variables nécessaires sont fournies.") from e
 
     def validate_output(self, content: str) -> tuple[bool, str]:
         """
@@ -92,7 +92,7 @@ class WorkflowGenerator:
             yaml.safe_load(content)
             return True, "YAML syntax is valid"
         except yaml.YAMLError as e:
-            return False, f"❌ YAML invalide : {str(e)}\n➡️ Vérifiez la syntaxe générée ou utilisez un validateur YAML en ligne."
+            return False, f"YAML invalide : {str(e)}\nVérifiez la syntaxe générée ou utilisez un validateur YAML en ligne."
 
     def write_workflow(self, output_path: Path, content: str, filename: str) -> Path:
         """
@@ -118,7 +118,7 @@ class WorkflowGenerator:
                 f.write(content)
             return workflow_file
         except OSError as e:
-            raise OSError(f"Impossible d'écrire le fichier workflow : {str(e)}\n➡️ Vérifiez les permissions du dossier ou l'espace disque.") from e
+            raise OSError(f"Impossible d'écrire le fichier workflow : {str(e)}\nVérifiez les permissions du dossier ou l'espace disque.") from e
 
     def generate(
         self,
@@ -152,7 +152,7 @@ class WorkflowGenerator:
         # Validate output
         is_valid, message = self.validate_output(content)
         if not is_valid:
-            raise ValueError(f"Le workflow généré est invalide : {message}\n➡️ Corrigez le template ou les variables d'entrée.")
+            raise ValueError(f"Le workflow généré est invalide : {message}\nCorrigez le template ou les variables d'entrée.")
 
         # Determine filename
         if filename is None:

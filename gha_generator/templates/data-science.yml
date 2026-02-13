@@ -87,7 +87,7 @@ jobs:
       - name: Generate data quality report
         if: steps.check_notebooks.outputs.notebooks_exist == 'true'
         run: |
-          echo "📊 Data Science project validation completed"
-          echo "✅ Code quality checks passed"
-          echo "✅ Tests executed successfully"
-          echo "✅ Notebooks validated"
+          echo "Data Science project validation completed"
+          echo "Code quality checks passed"
+          echo "Tests executed successfully"
+          echo "Notebooks validated"

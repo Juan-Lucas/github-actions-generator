@@ -102,5 +102,5 @@ jobs:
   #     
   #     - name: Deploy to production
   #       run: |
-  #         echo "🚀 Deploying to production..."
+  #         echo "Deploying to production..."
   #         # Add your deployment commands here (e.g., Netlify, Vercel, AWS S3)

@@ -1,9 +1,5 @@
 # GitHub Actions Generator
 
-[![PyPI version](https://badge.fury.io/py/gha-generator.svg)](https://badge.fury.io/py/gha-generator)
-[![Python](https://img.shields.io/pypi/pyversions/gha-generator.svg)](https://pypi.org/project/gha-generator/)
-[![License](https://img.shields.io/pypi/l/gha-generator.svg)](https://github.com/Juan-Lucas/github-actions-generator/blob/main/LICENSE)
-
 Un outil CLI pour générer des workflows GitHub Actions personnalisés et standardisés.
 
 ## Description
@@ -92,13 +88,10 @@ gha-gen create --config .gha-gen.yml
 - **Frontend React** : build, lint, tests, audit sécurité, déploiement
 - **API FastAPI** : tests, coverage, build/push Docker, déploiement cloud
 
-### Captures d'écran & GIF
 
-<img src="docs/img/gha-gen-demo.gif" alt="Démo CLI" width="600" />
+Captures d'écran et GIF :
 
-<img src="docs/img/gha-gen-list-templates.png" alt="Liste templates" width="600" />
-
-> Ajoutez vos propres captures d'écran ou GIF dans le dossier `docs/img/` pour illustrer l'utilisation !
+Ajoutez vos propres captures d'écran ou GIF dans le dossier `docs/img/` pour illustrer l'utilisation.
 
 
 
@@ -130,27 +123,28 @@ gha-gen export --from .github/workflows/ci.yml --to circleci
 
 
 
+
 ## Templates disponibles
 
 ### data-science
 Projets Data Science, Machine Learning, Notebooks Jupyter  
-**Inclut:** Setup Python, linting (Ruff, Black, Flake8), tests pytest, validation notebooks
+Inclut : Setup Python, linting (Ruff, Black, Flake8), tests pytest, validation notebooks
 
 ### django-api
 Applications Django, API Django REST Framework  
-**Inclut:** Setup Python, PostgreSQL, migrations Django, tests pytest-django, linting
+Inclut : Setup Python, PostgreSQL, migrations Django, tests pytest-django, linting
 
 ### laravel-api
 Applications Laravel, API PHP  
-**Inclut:** Setup PHP, MySQL, Composer, tests PHPUnit, linting PHP CodeSniffer
+Inclut : Setup PHP, MySQL, Composer, tests PHPUnit, linting PHP CodeSniffer
 
 ### react-app
 Applications React, Next.js, Node.js frontend  
-**Inclut:** Setup Node.js, ESLint, Prettier, tests Jest, build production
+Inclut : Setup Node.js, ESLint, Prettier, tests Jest, build production
 
 ### fastapi
 Applications FastAPI, API Python asynchrone  
-**Inclut:** Setup Python, linting, tests pytest, coverage, build/push Docker, déploiement cloud
+Inclut : Setup Python, linting, tests pytest, coverage, build/push Docker, déploiement cloud
 
 
 ## Tests
@@ -163,11 +157,13 @@ pytest
 pytest --cov=gha_generator
 ```
 
-**69 tests, 84% de couverture**
+
+69 tests, 84% de couverture
 
 ## Documentation complète
 
-La documentation détaillée (API, guides, exemples avancés) est disponible sur [ReadTheDocs](https://gha-generator.readthedocs.io/) *(à compléter)* ou dans le dossier `docs/` du projet.
+
+La documentation détaillée (API, guides, exemples avancés) est disponible sur [ReadTheDocs](https://gha-generator.readthedocs.io/) (à compléter) ou dans le dossier `docs/` du projet.
 
 Pour contribuer à la doc, voir le guide dans `CONTRIBUTING.md`.
 

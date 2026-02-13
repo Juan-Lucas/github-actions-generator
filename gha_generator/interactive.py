@@ -7,7 +7,7 @@ except ImportError:
 
 def interactive_mode():
     if questionary is None:
-        click.echo("❌ Le module 'questionary' n'est pas installé. Installez-le avec 'pip install questionary'.", err=True)
+        click.echo("Le module 'questionary' n'est pas installé. Installez-le avec 'pip install questionary'.", err=True)
         return
 
     project_type = questionary.select(

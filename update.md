@@ -1,6 +1,7 @@
+
 # Plan d'amélioration - GitHub Actions Generator
 
-## 🎯 Améliorations prioritaires (v0.2.0)
+## Améliorations prioritaires (v0.2.0)
 
 ### 1. **Nouveaux templates** 
 - **FastAPI** : API moderne Python asynchrone
@@ -33,9 +34,10 @@ Puis : `gha-gen create --config .gha-gen.yml`
 - `gha-gen preview` : Afficher le YAML sans créer le fichier
 - `gha-gen init-project` : Créer structure complète (.github/, tests/, etc.)
 
+
 ---
 
-## 🚀 Fonctionnalités avancées (v0.3.0)
+## Fonctionnalités avancées (v0.3.0)
 
 ### 5. **Support multi-workflows**
 ```bash
@@ -63,9 +65,10 @@ gha-gen export --from ci.yml --to gitlab-ci  # Convertit vers .gitlab-ci.yml
 gha-gen export --from ci.yml --to circleci   # Convertit vers .circleci/config.yml
 ```
 
+
 ---
 
-## 📚 Améliorations documentation (v0.1.1)
+## Améliorations documentation (v0.1.1)
 
 ### 9. **Installation depuis PyPI**
 Mettre à jour README :
@@ -89,9 +92,10 @@ pip install -e .
 - API documentation
 - Guide de contribution détaillé
 
+
 ---
 
-## 🔧 Améliorations techniques (v0.1.1)
+## Améliorations techniques (v0.1.1)
 
 ### 12. **Validation avancée**
 ```bash
@@ -115,9 +119,10 @@ gha-gen create --type django-api --dry-run  # Simule sans créer
 - Suggestions de correction
 - Lien vers documentation
 
+
 ---
 
-## 🎨 Qualité de vie (v0.1.1)
+## Qualité de vie (v0.1.1)
 
 ### 16. **Couleurs et formatage CLI**
 - Utiliser `rich` pour output coloré
@@ -136,9 +141,10 @@ gha-gen config set python_version 3.11
 gha-gen config set default_output .github/workflows
 ```
 
+
 ---
 
-## 📊 Analytics & Monitoring (v0.2.0)
+## Analytics & Monitoring (v0.2.0)
 
 ### 19. **Statistiques d'utilisation**
 ```bash
@@ -150,9 +156,10 @@ gha-gen stats  # Workflows générés, templates les plus utilisés
 gha-gen --check-update  # Vérifie si nouvelle version disponible
 ```
 
+
 ---
 
-## 🔐 Sécurité (v0.2.0)
+## Sécurité (v0.2.0)
 
 ### 21. **Scan de sécurité**
 - Intégrer `safety` pour vérifier dépendances
@@ -164,9 +171,10 @@ gha-gen --check-update  # Vérifie si nouvelle version disponible
 - Timeout sur jobs
 - Cache dependencies
 
+
 ---
 
-## 🎯 Roadmap suggérée
+## Roadmap suggérée
 
 ### **v0.1.1** (Quickfix - cette semaine)
 - [ ] Fixer URLs dans setup.py (`yourusername` → `Juan-Lucas`)
@@ -191,9 +199,10 @@ gha-gen --check-update  # Vérifie si nouvelle version disponible
 - [ ] Configuration globale
 - [ ] Statistiques d'utilisation
 
+
 ---
 
-## 💡 Priorités immédiates recommandées
+## Priorités immédiates recommandées
 
 1. **Fixer URLs dans setup.py** (5 min)
 2. **Ajouter template FastAPI** (1h)
@@ -201,9 +210,10 @@ gha-gen --check-update  # Vérifie si nouvelle version disponible
 4. **Installation PyPI dans README** (10 min)
 5. **Améliorer messages d'erreur** (1h)
 
+
 ---
 
-## 📋 Templates à ajouter (détails)
+## Templates à ajouter (détails)
 
 ### FastAPI Template
 ```yaml
@@ -269,9 +279,10 @@ jobs:
       - Deploy to K8s / AWS ECS
 ```
 
+
 ---
 
-## 🛠️ Modifications techniques nécessaires
+## Modifications techniques nécessaires
 
 ### Pour mode interactif
 ```python
@@ -326,25 +337,26 @@ def validate_strict(workflow_path: Path) -> tuple[bool, list[str]]:
     
     # Check permissions
     if "permissions" not in workflow.get("jobs", {}).get("test", {}):
-        issues.append("⚠️ Missing explicit permissions")
+      issues.append("Missing explicit permissions")
     
     # Check timeout
     if "timeout-minutes" not in workflow.get("jobs", {}).get("test", {}):
-        issues.append("⚠️ Missing job timeout")
+      issues.append("Missing job timeout")
     
     # Check actions versions
     for step in workflow.get("jobs", {}).get("test", {}).get("steps", []):
-        if "uses" in step:
-            action = step["uses"]
-            if "@v" not in action and "@main" not in action:
-                issues.append(f"⚠️ Action without version: {action}")
+      if "uses" in step:
+        action = step["uses"]
+        if "@v" not in action and "@main" not in action:
+          issues.append(f"Action without version: {action}")
     
     return len(issues) == 0, issues
 ```
 
+
 ---
 
-## 📦 Nouvelles dépendances à ajouter
+## Nouvelles dépendances à ajouter
 
 ```txt
 # requirements.txt (ajouts)
@@ -354,9 +366,10 @@ requests>=2.31.0       # Pour check-update
 safety>=3.0.0          # Pour scan sécurité
 ```
 
+
 ---
 
-## 🎨 Exemple avec Rich
+## Exemple avec Rich
 
 ```python
 from rich.console import Console
@@ -387,9 +400,10 @@ def list_templates():
     console.print(table)
 ```
 
+
 ---
 
-## ✅ Checklist avant release v0.1.1
+## Checklist avant release v0.1.1
 
 - [ ] Fixer URLs dans setup.py
 - [ ] Mettre à jour README avec installation PyPI
@@ -404,9 +418,10 @@ def list_templates():
 - [ ] Git tag : `git tag v0.1.1`
 - [ ] GitHub Release
 
+
 ---
 
-## 📝 Notes
+## Notes
 
 - Privilégier fonctionnalités simples et utiles (preview, FastAPI)
 - Maintenir compatibilité backward

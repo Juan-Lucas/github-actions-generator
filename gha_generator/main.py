@@ -22,12 +22,12 @@ def scan(workflow_file):
         for m in pat.finditer(content):
             findings.append(m.group(0))
     if findings:
-        console.print(f"[red]❌ Secrets potentiellement hardcodés trouvés dans {workflow_file} :")
+        console.print(f"[red]Secrets potentiellement hardcodés trouvés dans {workflow_file} :")
         for fnd in findings:
             console.print(f"  [yellow]- {fnd}")
-        console.print("[bold]Corrigez ces valeurs en utilisant les secrets GitHub (ex: ${{ secrets.MA_VARIABLE }})")
+        console.print("Corrigez ces valeurs en utilisant les secrets GitHub (ex: ${{ secrets.MA_VARIABLE }})")
     else:
-        console.print(f"[green]✅ Aucun secret hardcodé détecté dans {workflow_file}.")
+        console.print(f"[green]Aucun secret hardcodé détecté dans {workflow_file}.")
 @cli.command()
 @click.option("--requirements", "req_file", default="requirements.txt", help="Fichier requirements à scanner (défaut: requirements.txt)")
 def scan(req_file):
@@ -37,16 +37,17 @@ def scan(req_file):
     import sys
     console = Console()
     try:
-        console.print(f"[bold]🔐 Scan de sécurité des dépendances ({req_file})...[/bold]")
+        console.print(f"Scan de sécurité des dépendances ({req_file})...")
         result = subprocess.run([
             sys.executable, "-m", "safety", "check", "--file", req_file, "--full-report"
         ], capture_output=True, text=True)
         if result.returncode == 0:
-            console.print("[green]✅ Aucune vulnérabilité critique détectée dans les dépendances.")
+            console.print("[green]Aucune vulnérabilité critique détectée dans les dépendances.")
         else:
-            console.print("[red]❌ Vulnérabilités détectées :")
+            console.print("[red]Vulnérabilités détectées :")
             console.print(result.stdout)
-        console.print("\n[bold blue]Conseils GitHub Actions :")
+        # Conseils de sécurité pour GitHub Actions
+        console.print("\nConseils GitHub Actions :")
         console.print("- Utilisez des versions fixes pour les actions (ex: actions/checkout@v4)")
         console.print("- Définissez explicitement les permissions dans vos jobs")
         console.print("- Ajoutez un timeout-minutes à chaque job")
@@ -66,18 +67,18 @@ def check_update():
         url = f"https://pypi.org/pypi/{pkg}/json"
         r = requests.get(url, timeout=5)
         if r.status_code != 200:
-            Console().print(f"[yellow]⚠️ Impossible de vérifier la version sur PyPI (erreur HTTP {r.status_code})")
+            Console().print(f"[yellow]Impossible de vérifier la version sur PyPI (erreur HTTP {r.status_code})")
             sys.exit(1)
         latest = r.json()["info"]["version"]
         from . import __version__
         current = __version__
         if current == latest:
-            Console().print(f"[green]✅ Vous utilisez la dernière version : {current}")
+            Console().print(f"[green]Vous utilisez la dernière version : {current}")
         else:
-            Console().print(f"[bold yellow]🚀 Nouvelle version disponible : {latest} (vous avez {current})")
-            Console().print(f"[cyan]Mettez à jour avec : [bold]pip install -U gha-generator[/bold]")
+            Console().print(f"[bold yellow]Nouvelle version disponible : {latest} (vous avez {current})")
+            Console().print(f"[cyan]Mettez à jour avec : pip install -U gha-generator")
     except Exception as e:
-        Console().print(f"[red]❌ Erreur lors de la vérification : {e}")
+        Console().print(f"[red]Erreur lors de la vérification : {e}")
         sys.exit(1)
 @cli.command()
 @click.option(
@@ -98,13 +99,13 @@ def init_project(project_name):
         readme = base / "README.md"
         if not readme.exists():
             readme.write_text(f"# {project_name}\n\nProjet initialisé avec gha-gen init-project\n")
-        click.echo(f"✅ Structure du projet '{project_name}' créée :")
+        click.echo(f"Structure du projet '{project_name}' créée :")
         click.echo(f"- {base}/src/")
         click.echo(f"- {base}/tests/")
         click.echo(f"- {base}/.github/workflows/")
         click.echo(f"- {base}/README.md")
     except Exception as e:
-        click.echo(f"❌ Error: {str(e)}", err=True)
+        click.echo(f"Error: {str(e)}", err=True)
         sys.exit(1)
 @cli.command()
 @click.option(
@@ -159,7 +160,7 @@ def update(workflow_file, project_type, project_name, python_version, php_versio
                     detected_type = tpl
                     break
         if not detected_type:
-            click.echo("❌ Impossible de déterminer le type de template. Utilisez --type.", err=True)
+            click.echo("Impossible de déterminer le type de template. Utilisez --type.", err=True)
             sys.exit(1)
         # Variables
         variables = {
@@ -172,9 +173,9 @@ def update(workflow_file, project_type, project_name, python_version, php_versio
         new_content = generator.render_template(generator.load_template(detected_type), variables)
         with open(workflow_file, "w", encoding="utf-8") as f:
             f.write(new_content)
-        click.echo(f"✅ Workflow mis à jour : {workflow_file}")
+        click.echo(f"Workflow mis à jour : {workflow_file}")
     except Exception as e:
-        click.echo(f"❌ Error: {str(e)}", err=True)
+        click.echo(f"Error: {str(e)}", err=True)
         sys.exit(1)
 @cli.command()
 @click.option("--from", "from_file", required=True, type=click.Path(exists=True), help="Fichier workflow source (GitHub Actions)")
@@ -213,7 +214,7 @@ def export(from_file, to_ci):
             out_file = Path(from_file).with_suffix(".gitlab-ci.yml")
             with open(out_file, "w", encoding="utf-8") as f:
                 yaml.dump(gl, f, sort_keys=False, allow_unicode=True)
-            click.echo(f"✅ Exporté vers {out_file}")
+            click.echo(f"Exporté vers {out_file}")
         elif to_ci == "circleci":
             cc = {"version": 2.1, "jobs": {}, "workflows": {"version": 2, "gha-export": {"jobs": []}}}
             for job_name, job in jobs.items():
@@ -228,12 +229,12 @@ def export(from_file, to_ci):
             out_file = Path(from_file).with_suffix(".circleci.yml")
             with open(out_file, "w", encoding="utf-8") as f:
                 yaml.dump(cc, f, sort_keys=False, allow_unicode=True)
-            click.echo(f"✅ Exporté vers {out_file}")
+            click.echo(f"Exporté vers {out_file}")
         else:
-            click.echo("❌ Plateforme cible non supportée.", err=True)
+            click.echo("Plateforme cible non supportée.", err=True)
             sys.exit(1)
     except Exception as e:
-        click.echo(f"❌ Error: {str(e)}", err=True)
+        click.echo(f"Error: {str(e)}", err=True)
         sys.exit(1)
 @cli.command()
 def stats():
@@ -241,7 +242,7 @@ def stats():
     try:
         from .stats import load_stats
         stats = load_stats()
-        click.echo(f"\n📊 Statistiques gha-gen :")
+        click.echo(f"\nStatistiques gha-gen :")
         click.echo(f"- Workflows générés : {stats['total']}")
         if stats["templates"]:
             click.echo("- Utilisation par template :")
@@ -250,7 +251,7 @@ def stats():
         else:
             click.echo("- Aucun template utilisé pour l'instant.")
     except Exception as e:
-        click.echo(f"❌ Error: {str(e)}", err=True)
+        click.echo(f"Error: {str(e)}", err=True)
         sys.exit(1)
 @cli.group()
 def config():
@@ -266,7 +267,7 @@ def set(key, value):
     config = load_config()
     config[key] = value
     save_config(config)
-    click.echo(f"✅ Option '{key}' enregistrée : {value}")
+    click.echo(f"Option '{key}' enregistrée : {value}")
 
 @config.command()
 @click.argument("key")
@@ -298,7 +299,7 @@ def completion(shell):
             click.echo("autoload -U compinit; compinit")
             click.echo("_GHA_GEN_COMPLETE=source_zsh {}".format(prog))
     except Exception as e:
-        click.echo(f"❌ Error: {str(e)}", err=True)
+        click.echo(f"Error: {str(e)}", err=True)
         sys.exit(1)
 @cli.command()
 def init():
@@ -328,9 +329,9 @@ def init():
             },
             output_path
         )
-        click.echo(f"✅ Workflow créé : {workflow_file}")
+        click.echo(f"Workflow créé : {workflow_file}")
     except Exception as e:
-        click.echo(f"❌ Error: {str(e)}", err=True)
+        click.echo(f"Error: {str(e)}", err=True)
         sys.exit(1)
 @cli.command()
 @click.option(
@@ -348,14 +349,14 @@ def lint(workflow_file: str):
         file_path = Path(workflow_file)
         is_valid, issues = validate_strict(file_path)
         if is_valid:
-            click.echo(f"✅ Le workflow respecte les bonnes pratiques !")
+            click.echo(f"Le workflow respecte les bonnes pratiques.")
         else:
-            click.echo(f"❌ Problèmes détectés :")
+            click.echo(f"Problèmes détectés :")
             for issue in issues:
                 click.echo(f"- {issue}")
             sys.exit(1)
     except Exception as e:
-        click.echo(f"❌ Error: {str(e)}", err=True)
+        click.echo(f"Error: {str(e)}", err=True)
         sys.exit(1)
 """
 Main CLI entry point for GitHub Actions Generator.
@@ -533,13 +534,13 @@ def create(
                     increment_template(project_type)
                 except Exception:
                     pass
-                progress.console.print(f"[green]✅ Workflow '{wf}' créé : {workflow_file}")
+                progress.console.print(f"[green]Workflow '{wf}' créé : {workflow_file}")
                 progress.update(task, advance=1)
         from rich.console import Console
-        Console().print(f"[bold blue]📝 Dossier de sortie : {output_path.absolute()}")
+        Console().print(f"[bold blue]Dossier de sortie : {output_path.absolute()}")
 
     except Exception as e:
-        click.echo(f"❌ Error: {str(e)}", err=True)
+        click.echo(f"Error: {str(e)}", err=True)
         sys.exit(1)
 
 
@@ -627,14 +628,14 @@ def create(name, from_file):
     user_tpl_dir.mkdir(parents=True, exist_ok=True)
     dest = user_tpl_dir / f"{name}.yml"
     if dest.exists():
-        click.echo(f"❌ Le template '{name}' existe déjà dans {user_tpl_dir}", err=True)
+        click.echo(f"Le template '{name}' existe déjà dans {user_tpl_dir}", err=True)
         sys.exit(1)
     if from_file:
         shutil.copy(from_file, dest)
-        click.echo(f"✅ Template '{name}' créé à partir de {from_file} dans {dest}")
+        click.echo(f"Template '{name}' créé à partir de {from_file} dans {dest}")
     else:
         dest.write_text("""# Nouveau template personnalisé\nname: {{ project_name }} - Custom Workflow\n# Ajoutez votre contenu ici\n""")
-        click.echo(f"✅ Template vierge '{name}' créé dans {dest}")
+        click.echo(f"Template vierge '{name}' créé dans {dest}")
 
 @template.command()
 @click.argument("name")
@@ -643,9 +644,9 @@ def use(name):
     user_tpl_dir = Path.home() / ".gha-gen" / "templates"
     tpl_path = user_tpl_dir / f"{name}.yml"
     if not tpl_path.exists():
-        click.echo(f"❌ Le template '{name}' n'existe pas dans {user_tpl_dir}", err=True)
+        click.echo(f"Le template '{name}' n'existe pas dans {user_tpl_dir}", err=True)
         sys.exit(1)
-    click.echo(f"➡️ Utilisez --type {name} avec gha-gen create pour générer un workflow depuis ce template.")
+    click.echo(f"Utilisez --type {name} avec gha-gen create pour générer un workflow depuis ce template.")
 
 @cli.command()
 def list_templates():
@@ -676,7 +677,7 @@ def list_templates():
             "docker": "Build & Push Docker",
         }
         console = Console()
-        table = Table(title="📋 Templates disponibles", header_style="bold magenta")
+        table = Table(title="Templates disponibles", header_style="bold magenta")
         table.add_column("Nom", style="cyan", no_wrap=True)
         table.add_column("Description", style="green")
         table.add_column("Type", style="yellow")
@@ -687,7 +688,7 @@ def list_templates():
         console.print(table)
     except Exception as e:
         import click
-        click.echo(f"❌ Error: {str(e)}", err=True)
+        click.echo(f"Error: {str(e)}", err=True)
         import sys
         sys.exit(1)
 
@@ -706,19 +707,19 @@ def validate(workflow_file: str):
     try:
         from .utils import validate_yaml
 
-        click.echo(f"🔍 Validating {workflow_file}...")
+        click.echo(f"Validating {workflow_file}...")
 
         file_path = Path(workflow_file)
         is_valid, message = validate_yaml(file_path)
 
         if is_valid:
-            click.echo(f"✅ {message}")
+            click.echo(f"{message}")
         else:
-            click.echo(f"❌ {message}", err=True)
+            click.echo(f"{message}", err=True)
             sys.exit(1)
 
     except Exception as e:
-        click.echo(f"❌ Error: {str(e)}", err=True)
+        click.echo(f"Error: {str(e)}", err=True)
         sys.exit(1)
 
 
