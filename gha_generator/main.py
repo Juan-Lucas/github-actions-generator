@@ -165,6 +165,46 @@ def validate(workflow_file):
     is_valid, message = validate_yaml(Path(workflow_file))
     click.echo(message if is_valid else f"Erreur: {message}")
 
+@cli.command()
+def list_templates():
+    """List all available project templates (including custom ones)."""
+    try:
+        from rich.console import Console
+        from rich.table import Table
+        generator = WorkflowGenerator()
+        templates = generator.list_templates()
+        # Add user templates
+        user_tpl_dir = Path.home() / ".gha-gen" / "templates"
+        custom_tpls = []
+        if user_tpl_dir.exists():
+            for file in user_tpl_dir.glob("*.yml"):
+                if file.stem not in templates:
+                    custom_tpls.append(file.stem)
+        descriptions = {
+            "data-science": "Data Science, ML, Jupyter Notebooks",
+            "django-api": "Django REST Framework API",
+            "laravel-api": "Laravel PHP API",
+            "react-app": "React / Next.js Frontend",
+            "fastapi": "FastAPI, Python async API",
+            "flask": "Flask, API Python légère",
+            "express": "Express.js, Node API",
+            "vue": "Vue.js Frontend",
+            "docker": "Build & Push Docker",
+        }
+        console = Console()
+        table = Table(title="Templates disponibles", header_style="bold magenta")
+        table.add_column("Nom", style="cyan", no_wrap=True)
+        table.add_column("Description", style="green")
+        table.add_column("Type", style="yellow")
+        for tpl in sorted(templates):
+            table.add_row(tpl, descriptions.get(tpl.replace(" (custom)", ""), "-"), "Officiel")
+        for tpl in sorted(custom_tpls):
+            table.add_row(tpl, "Template personnalisé", "Custom")
+        console.print(table)
+    except Exception as e:
+        click.echo(f"Error: {str(e)}", err=True)
+        sys.exit(1)
+
 def main():
     cli()
 
