@@ -125,7 +125,6 @@ def init():
     except Exception as e:
         click.echo(f"Error: {str(e)}", err=True)
         sys.exit(1)
-@cli.command()
 @cli.command("scan-security")
 @click.option("--requirements", "req_file", default="requirements.txt", help="Fichier requirements à scanner (défaut: requirements.txt)")
 def scan_security(req_file):
