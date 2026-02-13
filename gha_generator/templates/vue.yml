@@ -1,0 +1,52 @@
+name: {{ project_name }} - Vue.js CI/CD
+
+on:
+  push:
+    branches: [ main, dev ]
+  pull_request:
+    branches: [ main, dev ]
+
+env:
+  NODE_VERSION: "{{ node_version }}"
+  PROJECT_NAME: {{ project_name }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js {{ node_version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: "{{ node_version }}"
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          npm install
+
+      - name: Lint with Vue CLI
+        run: |
+          npx vue-cli-service lint
+        continue-on-error: true
+
+      - name: Run unit tests
+        run: |
+          npx vue-cli-service test:unit
+        continue-on-error: true
+
+      - name: Build production
+        run: |
+          npm run build
+        continue-on-error: true
+
+      - name: Deploy to Netlify/Vercel (optional)
+        run: |
+          echo "Ajouter ici vos commandes de déploiement Netlify/Vercel"
+        continue-on-error: true
