@@ -19,6 +19,7 @@ class WorkflowGenerator:
     def __init__(self):
         """Initialize the workflow generator."""
         from pathlib import Path
+
         from jinja2 import ChoiceLoader
         self.templates_dir = get_template_path()
         user_tpl_dir = Path.home() / ".gha-gen" / "templates"

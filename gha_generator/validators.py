@@ -1,5 +1,7 @@
 from pathlib import Path
+
 import yaml
+
 
 def validate_strict(workflow_path: Path) -> tuple[bool, list[str]]:
     """Validation stricte d'un workflow GitHub Actions (best practices)."""
