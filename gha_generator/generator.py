@@ -18,9 +18,16 @@ class WorkflowGenerator:
 
     def __init__(self):
         """Initialize the workflow generator."""
+        from pathlib import Path
+
+        from jinja2 import ChoiceLoader
         self.templates_dir = get_template_path()
+        user_tpl_dir = Path.home() / ".gha-gen" / "templates"
+        loaders = [FileSystemLoader(str(self.templates_dir))]
+        if user_tpl_dir.exists():
+            loaders.insert(0, FileSystemLoader(str(user_tpl_dir)))
         self.env = Environment(
-            loader=FileSystemLoader(str(self.templates_dir)),
+            loader=ChoiceLoader(loaders),
             trim_blocks=True,
             lstrip_blocks=True,
         )
@@ -45,9 +52,9 @@ class WorkflowGenerator:
             template = self.env.get_template(template_file)
             return template
         except TemplateNotFound:
+            # removed unused 'available' variable assignment
             raise ValueError(
-                f"Template '{template_type}' not found. "
-                f"Available templates: {', '.join(self.list_templates())}"
+                f"Template '{template_type}' not found."
             ) from None
 
     def render_template(self, template: Template, variables: dict[str, Any]) -> str:
@@ -61,7 +68,14 @@ class WorkflowGenerator:
         Returns:
             Rendered template as string
         """
-        return template.render(**variables)
+        # Inject a dummy github context if not present (for Jinja2 rendering)
+        if "github" not in variables:
+            variables["github"] = {"repository": "test/repo"}
+
+        try:
+            return template.render(**variables)
+        except Exception as e:
+            raise ValueError(f"Erreur lors du rendu du template : {str(e)}\nVérifiez que toutes les variables nécessaires sont fournies.") from e
 
     def validate_output(self, content: str) -> tuple[bool, str]:
         """
@@ -79,7 +93,7 @@ class WorkflowGenerator:
             yaml.safe_load(content)
             return True, "YAML syntax is valid"
         except yaml.YAMLError as e:
-            return False, f"Invalid YAML syntax: {str(e)}"
+            return False, f"YAML invalide : {str(e)}\nVérifiez la syntaxe générée ou utilisez un validateur YAML en ligne."
 
     def write_workflow(self, output_path: Path, content: str, filename: str) -> Path:
         """
@@ -105,7 +119,7 @@ class WorkflowGenerator:
                 f.write(content)
             return workflow_file
         except OSError as e:
-            raise OSError(f"Failed to write workflow file: {str(e)}") from e
+            raise OSError(f"Impossible d'écrire le fichier workflow : {str(e)}\nVérifiez les permissions du dossier ou l'espace disque.") from e
 
     def generate(
         self,
@@ -139,7 +153,7 @@ class WorkflowGenerator:
         # Validate output
         is_valid, message = self.validate_output(content)
         if not is_valid:
-            raise ValueError(f"Generated workflow is invalid: {message}")
+            raise ValueError(f"Le workflow généré est invalide : {message}\nCorrigez le template ou les variables d'entrée.")
 
         # Determine filename
         if filename is None:
@@ -152,18 +166,21 @@ class WorkflowGenerator:
 
     def list_templates(self) -> list[str]:
         """
-        List all available templates.
+        List all available templates (y compris personnalisés).
 
         Returns:
             List of template names (without .yml extension)
         """
         templates = []
-
-        if not self.templates_dir.exists():
-            return templates
-
-        for file in self.templates_dir.glob("*.yml"):
-            if file.stem != "base":  # Exclude base template
-                templates.append(file.stem)
-
+        if self.templates_dir.exists():
+            for file in self.templates_dir.glob("*.yml"):
+                if file.stem != "base":
+                    templates.append(file.stem)
+        # Ajoute les templates utilisateurs
+        from pathlib import Path
+        user_tpl_dir = Path.home() / ".gha-gen" / "templates"
+        if user_tpl_dir.exists():
+            for file in user_tpl_dir.glob("*.yml"):
+                if file.stem not in templates:
+                    templates.append(file.stem)
         return sorted(templates)

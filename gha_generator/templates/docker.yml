@@ -1,0 +1,40 @@
+name: {{ project_name }} - Docker Build & Push
+
+on:
+  push:
+    branches: [ main, dev ]
+  pull_request:
+    branches: [ main, dev ]
+
+env:
+  PROJECT_NAME: {{ project_name }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Build Docker image
+        run: |
+          docker build -t ${{ github.repository }}:latest .
+
+      - name: Docker scan (Trivy)
+        run: |
+          echo "Ajouter ici la commande Trivy pour scanner l'image Docker"
+        continue-on-error: true
+
+      - name: Push to Docker Hub / GHCR
+        run: |
+          echo "Ajouter ici la commande de push Docker Hub ou GHCR"
+        continue-on-error: true
+
+      - name: Deploy to K8s / AWS ECS (optional)
+        run: |
+          echo "Ajouter ici la commande de déploiement Kubernetes ou AWS ECS"
+        continue-on-error: true

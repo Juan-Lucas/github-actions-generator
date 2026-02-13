@@ -1,0 +1,24 @@
+site_name: GitHub Actions Generator
+site_description: Documentation officielle de l’outil gha-gen
+site_author: Jean-Luc MUPASA KALUNGA
+repo_url: https://github.com/Juan-Lucas/github-actions-generator
+nav:
+  - Accueil: index.md
+  - Guide utilisateur: guide.md
+  - API: api.md
+theme:
+  name: material
+  language: fr
+  palette:
+    - scheme: default
+      primary: blue
+      accent: light blue
+markdown_extensions:
+  - admonition
+  - codehilite
+  - toc:
+      permalink: true
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/Juan-Lucas/github-actions-generator

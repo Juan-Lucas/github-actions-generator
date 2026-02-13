@@ -19,3 +19,12 @@ ruff>=0.1.0
 # Development
 setuptools>=68.0.0
 wheel>=0.41.0
+
+# CLI Color & Formatting
+rich>=13.0.0
+
+# PyPI Version Check
+requests>=2.31.0
+
+# Security
+safety>=3.0.0
