@@ -1,5 +1,4 @@
 
-# Groupe pour la gestion des secrets
 @cli.group()
 def secrets():
     """Outils pour la gestion et la détection des secrets dans les workflows."""
@@ -29,65 +28,6 @@ def scan_secrets(workflow_file):
         console.print("Corrigez ces valeurs en utilisant les secrets GitHub (ex: ${{ secrets.MA_VARIABLE }})")
     else:
         console.print(f"[green]Aucun secret hardcodé détecté dans {workflow_file}.")
-@cli.group()
-def secrets():
-    """Outils pour la gestion et la détection des secrets dans les workflows."""
-    pass
-
-@secrets.command()
-@click.option("--file", "workflow_file", required=True, type=click.Path(exists=True), help="Fichier workflow YAML à scanner")
-def scan(workflow_file):
-    """Détecte les secrets potentiellement hardcodés dans un workflow GitHub Actions."""
-    import re
-
-    from rich.console import Console
-    console = Console()
-    patterns = [
-        re.compile(r"(?i)(secret|token|password|key|api[_-]?key|auth)[^\n]*:[^\n]*['\"]?([A-Za-z0-9\-_=]{8,})['\"]?"),
-        re.compile(r"(?i)(secret|token|password|key|api[_-]?key|auth)[^\n]*=[^\n]*['\"]?([A-Za-z0-9\-_=]{8,})['\"]?")
-    ]
-    with open(workflow_file, encoding="utf-8") as f:
-        content = f.read()
-    findings = []
-    for pat in patterns:
-        for m in pat.finditer(content):
-            findings.append(m.group(0))
-    if findings:
-        console.print(f"[red]Secrets potentiellement hardcodés trouvés dans {workflow_file} :")
-        for fnd in findings:
-            console.print(f"  [yellow]- {fnd}")
-        console.print("Corrigez ces valeurs en utilisant les secrets GitHub (ex: ${{ secrets.MA_VARIABLE }})")
-    else:
-        console.print(f"[green]Aucun secret hardcodé détecté dans {workflow_file}.")
-@cli.command()
-@click.option("--requirements", "req_file", default="requirements.txt", help="Fichier requirements à scanner (défaut: requirements.txt)")
-def scan(req_file):
-    """Scanne les dépendances Python avec safety et suggère les bonnes pratiques de sécurité GitHub Actions."""
-    import subprocess
-    import sys
-
-    from rich.console import Console
-    console = Console()
-    try:
-        console.print(f"Scan de sécurité des dépendances ({req_file})...")
-        result = subprocess.run([
-            sys.executable, "-m", "safety", "check", "--file", req_file, "--full-report"
-        ], capture_output=True, text=True)
-        if result.returncode == 0:
-            console.print("[green]Aucune vulnérabilité critique détectée dans les dépendances.")
-        else:
-            console.print("[red]Vulnérabilités détectées :")
-            console.print(result.stdout)
-        # Conseils de sécurité pour GitHub Actions
-        console.print("\nConseils GitHub Actions :")
-        console.print("- Utilisez des versions fixes pour les actions (ex: actions/checkout@v4)")
-        console.print("- Définissez explicitement les permissions dans vos jobs")
-        console.print("- Ajoutez un timeout-minutes à chaque job")
-        console.print("- Ne stockez jamais de secrets en dur dans les workflows")
-        console.print("- Utilisez le scan lint (gha-gen lint) pour détecter d'autres problèmes")
-    except Exception as e:
-        click.echo(f"Error: {str(e)}", err=True)
-        sys.exit(1)
 @cli.command()
 def stats():
     """Affiche les statistiques d'utilisation de gha-gen."""
