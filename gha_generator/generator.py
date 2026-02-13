@@ -52,8 +52,7 @@ class WorkflowGenerator:
             template = self.env.get_template(template_file)
             return template
         except TemplateNotFound:
-            available = self.list_templates()
-            # suggestion variable removed (was unused)
+            # removed unused 'available' variable assignment
             raise ValueError(
                 f"Template '{template_type}' not found."
             ) from None
