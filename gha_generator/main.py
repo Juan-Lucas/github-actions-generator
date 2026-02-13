@@ -115,7 +115,7 @@ def list_templates():
 
         click.echo("Available templates:")
         for tpl in sorted(templates):
-            click.echo(f" - {tpl}")
+            click.echo(f"• {tpl}")
     except Exception as e:
         click.echo(f"Error: {str(e)}", err=True)
         sys.exit(1)
