@@ -72,6 +72,10 @@ class WorkflowGenerator:
         Returns:
             Rendered template as string
         """
+        # Inject a dummy github context if not present (for Jinja2 rendering)
+        if "github" not in variables:
+            variables["github"] = {"repository": "test/repo"}
+
         try:
             return template.render(**variables)
         except Exception as e:
