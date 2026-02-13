@@ -92,10 +92,9 @@ def create(
             }
             variables.update(custom_env)
 
-            # Important: the tests expect specific filenames like 'ci.yml' 
-            # if we are in a simple workflow generation
+            # Use ci.yml if wf is ci, otherwise use generator default
             filename = f"{wf}.yml" if workflows or wf == "ci" else get_workflow_filename(project_type, project_name)
-            
+
             workflow_file = generator.generate(project_type, variables, output_path, filename=filename)
             click.echo(f"Workflow '{wf}' created successfully: {workflow_file}")
 
@@ -113,7 +112,7 @@ def list_templates():
         if not templates:
             click.echo("No templates found.")
             return
-        
+
         click.echo("Available templates:")
         for tpl in sorted(templates):
             click.echo(f" - {tpl}")
